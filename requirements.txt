@@ -1,0 +1,9 @@
+elasticsearch==7.9.1
+dash
+plotly
+pandas
+requests
+kaleido
+cookiecutter
+dash-bootstrap-components
+Pillow
