@@ -15,21 +15,12 @@ from scripts.query import make_query
 from components.download import download_modal
 
 dash.register_page(__name__)
-url = 'http://35.223.25.228/api/'
 
-query = """{
-      metadata_point{
-        cell_id
-        age
-        sex
-      }
-    }
-    """
 
-r = requests.post(url, data={'query': query})
-mstr = r.text
-df = pd.DataFrame(json.loads(mstr)['data']['metadata_point'])
-print(df)
+df = make_query(
+    type="metadata"
+    )
+
 
 integration_methods = ["BBKNN", "Harmony", "Scanorama"]
 
@@ -133,27 +124,13 @@ layout = html.Div([
     Input('chosen_ethnicity', 'value')
 )
 def update_table(dataset_value, sex_value, age_value, ethnicity_value):
+    
+    #Placeholder code
+    df = make_query(
+        type="metadata"
+        )
 
-    query = f"""{{
-          metadata_point{{
-            cell_id
-            age
-            {sex_value}
-          }}
-        }}
-        """
+    return df.to_dict('records')
+    
 
-    r = requests.post(url, data={'query': query})
-    mstr = r.text
 
-    df = pd.DataFrame(json.loads(mstr)['data']['metadata_point'])
-
-    table = dash_table.DataTable(
-        df.to_dict('records'),
-        [{"name": i, "id": i} for i in df.columns],
-        page_size=25,
-        style_table={'width': '40%'},
-        style_cell={'textAlign': 'left'},
-        id='metadata_table')
-
-    return table

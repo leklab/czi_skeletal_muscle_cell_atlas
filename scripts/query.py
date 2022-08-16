@@ -7,9 +7,9 @@ import json
 
 def make_query(
     type,
-    integration_method,
-    gene_value,
-    url='http://35.223.25.228/api/'
+    integration_method='',
+    gene_value='',
+    url='http://35.208.172.98/api/'
 ):
     """
     type: a string (temporarily defining if it's going to be returning a dataset
@@ -44,5 +44,18 @@ def make_query(
 
         dataset = requests.post(url, data={'query': query})
         df = pd.DataFrame(json.loads(dataset.text)['data']['expression'])
+
+    elif type == "metadata":
+        query = f"""{{
+            metadata_point{{
+                cell_id
+                age
+                sex
+            }}
+        }}"""
+
+        dataset = requests.post(url, data={'query': query})
+        df = pd.DataFrame(json.loads(dataset.text)['data']['metadata_point'])
+
 
     return df
