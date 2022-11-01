@@ -4,70 +4,25 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import os
 
-from scripts.process_gene_id import get_gene_id
 from scripts.query import make_query
 from components.download import download_modal
+from components.options import visualization_options
+
 colors = {
     'text': '#000000'
 }
-
-# Options
-# genes = get_gene_id("gene_names.tsv")
-with open("genes.tsv") as gene:
-    genes = [line.strip("\n") for line in gene]
-    gene.close()
-
-metadata_feature = ["source", "sample", "chemistry", "injury days", "injury agent", "age", "type",
-                    "tissue", "mouse strain", "sex", "mice per sample", "sequencing instrument"]
-integration_methods = ["BBKNN", "Harmony", "Scanorama"]
 
 dash.register_page(__name__, path="/")
 
 layout = html.Div([
     dbc.Row([
-        dbc.Col(dbc.Card([
-            dbc.ListGroup([
-                dbc.ListGroupItem([
-                    html.Label(['Select a Gene: ']),
-                    html.Div(className='three columns', children=dcc.Dropdown(
-                        options=[
-                            {'label': x, 'value': x} for x in genes
-                        ],
-                        value="Thoc1",
-                        id='chosen_gene',
-                        clearable=False
-                    ))
-                ]),
-                dbc.ListGroupItem([
-                    html.Label(['Select a Dataset:']),
-                    html.Div(className='three columns', children=dcc.Dropdown(
-                        options=[
-                            {'label': x, 'value': x.lower()} for x in integration_methods
-                        ],
-                        value="bbknn",
-                        id='chosen_dataset',
-                        clearable=False
-                    ))
-                ]),
-                dbc.ListGroupItem([
-                    html.Label(['Select a Feature: ']),
-                    html.Div(className='three columns', children=dcc.Dropdown(
-                        options=[
-                            {'label': x, 'value': x} for x in metadata_feature
-                        ],
-                        value="source",
-                        id='chosen_feature',
-                        clearable=False
-                    ))
-                ])
-            ], flush=False)
-        ]), width=2),
+        dbc.Col(visualization_options() , width=2),
         dbc.Col(html.Div(className="visualizations", children=[
             dbc.Tabs(id="chosen_model", active_tab="UMAP", children=[
                 dbc.Tab(label="UMAP", tab_id="UMAP"),
                 dbc.Tab(label="Violin Plot", tab_id="Violin Plot"),
+                dbc.Tab(label="Dot Plot", tab_id="Dot Plot")
             ]
             ),
             dbc.Row([
