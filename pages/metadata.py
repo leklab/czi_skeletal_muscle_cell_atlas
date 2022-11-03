@@ -1,5 +1,5 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, State, callback, dash_table
+from dash import html, Input, Output, callback, dash_table
 import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
@@ -9,145 +9,71 @@ from components.options import histology_options, metadata_options
 
 dash.register_page(__name__)
 
-def imageSquare(src, alt):
-    return dbc.Col(
+images = [
+    ("assets/3yo_female_normal-control/3yo_female_H&E_40xd.jpg", "3yo Female H&E 40xd"), 
+    ("assets/3yo_female_normal-control/3yo_female_H&E_40xe.jpg", "3yo Female H&E 40xe"),
+    ("assets/3yo_female_normal-control/3yo_female_H&E.jpg", "3yo Female H&E"),
+    ("assets/7yo_female_normal-control/7yo_normal_H&E_40xa.jpg", "7yo Female H&E 40xa"),
+    ("assets/7yo_female_normal-control/7yo_normal_H&E_40xb.jpg", "7yo Female H&E 40xb"),
+    ("assets/7yo_female_normal-control/7yo_normal_H&E_40xf.jpg", "7yo Female H&E 40xf"),
+    ("assets/7yo_female_normal-control/7yo_normal_H&E.jpg", "7yo Female H&E"),
+    ("assets/teenage male control muscle/teenage_male_H&E.jpg", "Teenage Male H&E"),
+]
+
+def generate_grid (lst):
+    m, n = 2, 4
+    imageSquares = []
+    count = 0
+    for _ in range(m):
+        tmp = []
+        for _ in range(n):
+            tmp.append(imageSquare(lst[count][0], lst[count][1]))
+            count += 1
+        imageSquares.append(tmp)
+    
+    res = []
+    for i in imageSquares:
+        res.append(dbc.Row(i))
+    return res
+
+def imageSquare(src, alt, num=0):
+    return dbc.Col(children = [
         html.Div(className="histology", children = [
-            html.Img(src=src, width = "100%"),
+            html.Img(src=src, width="100%", style = {"cursor": "pointer"}, id = f"test-image-{num}"),
             html.Div(
-                html.P(alt),
-                style = {"textAlign": "center", "padding":"10px 20px"})
-        ]),
-        width = 3,
-        style = { 
-            "backgroundColor" : "white", 
-            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-            "marginBottom" : "25px",
-            "borderRadius" : "20px"
-        }
-    )
+                html.P(alt), 
+                style = {"textAlign":"center", "padding": "10px 20px"}),
+            ], 
+            style = {
+                "width":"95%", 
+                "backgroundColor" : "white", 
+                "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
+                "marginBottom" : "25px"
+            }
+        ),
+        html.Div(id='modal', children=[
+            html.Img(
+                src=src,
+                height='500',
+                width='500',
+                style={
+                    'display':'block',
+                    'margin-left': 'auto',
+                    'margin-right': 'auto'
+                })
+        ], style={'display': 'none'})
+    ])
 
 df = make_query(type="metadata")
 
 layout = html.Div([
+            dbc.Row(html.H4("Histology Metadata")),
+            dbc.Row(html.P("Filter histology slides. Click on an image to view an enlarged version.")),
             dbc.Row([
                 dbc.Col(histology_options(), width = 2),
-                dbc.Col(children = [
-                    dbc.Row([
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/3yo_female_normal-control/3yo_female_H&E_40xd.jpg", width="100%"),
-                            html.Div(
-                                html.P("3yo Female H&E 40xd"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        })),
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/3yo_female_normal-control/3yo_female_H&E_40xe.jpg", width="100%"),
-                            html.Div(
-                                html.P("3yo Female H&E 40xe"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        })),
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/3yo_female_normal-control/3yo_female_H&E.jpg", width="100%"),
-                            html.Div(
-                                html.P("3yo Female H&E"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        }))
-                    ]),
-                    dbc.Row([
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/7yo_female_normal-control/7yo_normal_H&E_40xa.jpg", width="100%"),
-                            html.Div(
-                                html.P("7yo Female H&E 40xa"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        })),
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/7yo_female_normal-control/7yo_normal_H&E_40xb.jpg", width="100%"),
-                            html.Div(
-                                html.P("7yo Female H&E 40xb"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        })),
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/7yo_female_normal-control/7yo_normal_H&E_40xf.jpg", width="100%"),
-                            html.Div(
-                                html.P("7yo Female H&E 40xf"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        }))
-                    ]),
-                    dbc.Row([
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/7yo_female_normal-control/7yo_normal_H&E.jpg", width="100%"),
-                            html.Div(
-                                html.P("7yo Female H&E"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        })),
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"assets/teenage male control muscle/teenage_male_H&E.jpg", width="100%"),
-                            html.Div(
-                                html.P("Teenage Male H&E"), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        })),
-                        dbc.Col(html.Div(className="histology", children = [
-                            html.Img(src=r"", width="100%"),
-                            html.Div(
-                                html.P(""), 
-                                style = {"textAlign":"center", "padding": "10px 20px"})
-                        ], 
-                        style = {
-                            "width":"80%", 
-                            "backgroundColor" : "white", 
-                            "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", 
-                            "marginBottom" : "25px", 
-                        }))
-                    ])
-                ])
+                dbc.Col(children = generate_grid(images))
             ]),
+            dbc.Row(html.H4("Donor Metadata")),
             dbc.Row([
                     dbc.Col(metadata_options() , width=2),
                     dbc.Col(html.Div(className="visualizations", children=[
@@ -161,11 +87,9 @@ layout = html.Div([
                                 style_cell={'textAlign': 'left'},
                                 id = 'metadata_table'
                             )], width=6),
-
                         ]),
-
                     ])),
-                ]),
+                ])
         ], style={'margin-left': '5%', 'margin-right': '5%', 'overflow-x': 'hidden'})
 
 
@@ -185,6 +109,24 @@ def update_table(dataset_value, sex_value, age_value, ethnicity_value):
         )
 
     return df.to_dict('records')
-    
 
-
+# Enlarges image
+@callback(
+    Output('modal', 'style'),
+    [Input('test-image-1', 'n_clicks')],
+    prevent_initial_call = True,
+)
+def display_image(n):
+    if n % 2 == 0:
+        return {'display': 'none'}
+    else:
+        return {
+            'display': 'block',
+            'z-index': '1',
+            'padding-top': '100',
+            'left': '0',
+            'top': '0',
+            'width': '100%',
+            'height': '100%',
+            'overflow': 'auto'
+            }
