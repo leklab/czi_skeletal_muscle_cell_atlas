@@ -1,14 +1,14 @@
 import dash
 from dash import html
-import dash_bootstrap_components as dbc
+import os
 
 dash.register_page(__name__)
 
-### RESOURCE ###
-# Template format for html <a> tags, define and use variables accordingly
-# link1 = html.A('TITLE', href="")
-
-github = html.A('github', href="https://github.com/leklab/czi_skeletal_muscle_cell_atlas", target="_blank")
+github = html.A(
+    'github', 
+    href=os.getenv("GITHUB_URL"), 
+    target="_blank"
+)
 
 layout = html.Div([
     html.H5("About Pediatric Skeletal Cell Muscle Atlas"),
@@ -24,5 +24,5 @@ layout = html.Div([
     html.H5("More Headings"),
     html.P([
         "More text"
-        ])
-],style={'margin-left': '5%', 'margin-right': '5%'})
+    ])
+], style={'margin-left': '5%', 'margin-right': '5%'})

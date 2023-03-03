@@ -1,55 +1,59 @@
 import dash_bootstrap_components as dbc
-from dash import html, dcc, Input, Output, State
-import plotly.graph_objects as go
+from dash import html, dcc
 
 file_extensions = ["pdf", "svg", "png"]
 
 def download_modal(number):
-    return [dbc.Button("Download", id=f'open_{number}', n_clicks=0),
-        dbc.Modal(
-            [
-                dbc.ModalHeader(dbc.ModalTitle("Download Specifications")),
-                dbc.ModalBody([
-                    html.Label(['File Name']),
-                    html.Div(className="download-file-name", children=dcc.Input(
+    return [
+        dbc.Button("Download", id=f'open_{number}', n_clicks=0),
+        dbc.Modal([
+            dbc.ModalHeader(dbc.ModalTitle("Download Specifications")),
+            dbc.ModalBody([
+                html.Label(['File Name']),
+                html.Div(className="download-file-name", children=
+                    dcc.Input(
                         id=f"file-name_{number}",
                         value="My Figure",
-                    )),
-
-                    html.Label(['File Extension']),
-                    html.Div(className="download-file-extension", children=dcc.Dropdown(
+                    )
+                ),
+                html.Label(['File Extension']),
+                html.Div(className="download-file-extension", children=
+                    dcc.Dropdown(
                         options=[
                             {'label': x, 'value': x} for x in file_extensions
                         ],
                         value= "pdf",
                         id= f"chosen_download_option_{number}"
-                    )),
-
-                    html.Label(['Horizontal Dimensions (in)']),
-                    html.Div(className="dimensions", children=dcc.Input(
+                    )
+                ),
+                html.Label(['Horizontal Dimensions (in)']),
+                html.Div(className="dimensions", children=
+                    dcc.Input(
                         id=f"horizontal_{number}",
                         value=10,
                         type="number"
-                    )),
-
-                    html.Label(['Vertical Dimensions (in)']),
-                    html.Div(className="dimensions", children=dcc.Input(
+                    )
+                ),
+                html.Label(['Vertical Dimensions (in)']),
+                html.Div(className="dimensions", children=
+                    dcc.Input(
                         id=f"vertical_{number}",
                         value=5,
                         type="number"
-                    ))
-                ]),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Download", id=f"download_{number}", className="ms-auto", n_clicks=0
                     )
-                ),
-            ],
-            id=f"modal_{number}",
-            centered=True,
-            is_open=False,
-        ),
-        html.Div(id=f"download-output_{number}")]
+                )
+            ]),
+            dbc.ModalFooter(
+                dbc.Button(
+                    "Download", 
+                    id=f"download_{number}", 
+                    className="ms-auto", 
+                    n_clicks=0
+                )
+            ),
+        ], id=f"modal_{number}", centered=True, is_open=False),
+        html.Div(id=f"download-output_{number}")
+    ]
 
 # def downloadHandler(app, number):
 #     @app.callback(

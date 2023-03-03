@@ -1,0 +1,21 @@
+src,staining_method,age_group,sex
+3yo_female_normal-control/3yo_female_fast-myosin.jpg,fast-myosin,3 - 5 yrs,F
+3yo_female_normal-control/3yo_female_Gomori.jpg,Gomori,3 - 5 yrs,F
+3yo_female_normal-control/3yo_female_H&E_40xd.jpg,H&E,3 - 5 yrs,F
+3yo_female_normal-control/3yo_female_H&E_40xe.jpg,H&E,3 - 5 yrs,F
+3yo_female_normal-control/3yo_female_H&E.jpg,H&E,3 - 5 yrs,F
+3yo_female_normal-control/3yo_female_SDH.jpg,SDH,3 - 5 yrs,F
+3yo_female_normal-control/3yo_female_slow-myosin.jpg,slow-myosin,3 - 5 yrs,F
+7yo_female_normal-control/7yo_normal_fast-myosin.jpg,fast-myosin,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_Gomori.jpg,Gomori,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_H&E_40xa.jpg,H&E,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_H&E_40xb.jpg,H&E,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_H&E_40xf.jpg,H&E,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_H&E.jpg,H&E,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_slow-myosin.jpg,slow-myosin,6 - 12 yrs,F
+7yo_female_normal-control/7yo_normal_NADH.jpg,NADH,6 - 12 yrs,F
+teenage male control muscle/teenage_male_fast-myosin.jpg,fast-myosin,13 - 18 yrs,M
+teenage male control muscle/teenage_male_Gomori.jpg,Gomori,13 - 18 yrs,M
+teenage male control muscle/teenage_male_H&E.jpg,H&E,13 - 18 yrs,M
+teenage male control muscle/teenage_male_SDH.jpg,SDH,13 - 18 yrs,M
+teenage male control muscle/teenage_male_slow-myosin.jpg,slow-myosin,13 - 18 yrs,M

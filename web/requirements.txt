@@ -7,3 +7,5 @@ kaleido
 cookiecutter
 dash-bootstrap-components
 Pillow
+dash-mantine-components
+python-dotenv

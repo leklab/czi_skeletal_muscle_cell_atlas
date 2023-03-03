@@ -1,15 +1,16 @@
 """
 This script makes a query to elasticsearch 
 """
-import requests
+import requests as re
 import pandas as pd
 import json
+import os 
 
 def make_query(
     type,
     integration_method='',
     gene_value='',
-    url='http://35.208.172.98/api/'
+    url=os.getenv('API_URL')
 ):
     """
     type: a string (temporarily defining if it's going to be returning a dataset
@@ -31,7 +32,7 @@ def make_query(
             }}
         }}"""
 
-        dataset = requests.post(url, data={'query': query})
+        dataset = re.post(url, data={'query': query})
         df = pd.DataFrame(json.loads(dataset.text)['data']['umap'])
 
     elif type == "gene":
@@ -42,7 +43,7 @@ def make_query(
             }}
         }}"""
 
-        dataset = requests.post(url, data={'query': query})
+        dataset = re.post(url, data={'query': query})
         df = pd.DataFrame(json.loads(dataset.text)['data']['expression'])
 
     elif type == "metadata":
@@ -54,7 +55,7 @@ def make_query(
             }}
         }}"""
 
-        dataset = requests.post(url, data={'query': query})
+        dataset = re.post(url, data={'query': query})
         df = pd.DataFrame(json.loads(dataset.text)['data']['metadata_point'])
 
 
