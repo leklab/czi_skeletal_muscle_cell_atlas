@@ -33,7 +33,7 @@ def visualization_options ():
 						value = ["Thoc1"],
 						searchable=True,
 						limit=10,
-						maxSelectedValues=1,
+						# maxSelectedValues=1,
 						clearable = False,
 						id='chosen_gene',
 					)
