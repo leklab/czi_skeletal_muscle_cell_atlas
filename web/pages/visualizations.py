@@ -312,7 +312,7 @@ def update_violin_plot_ctype(gene_value):
 )
 def update_dot_plot(gene_list):
     print(gene_list)
-    # initialize empty data frame to store results
+   # initialize empty data frame to store results
     results_df = pd.DataFrame(columns=["gene_name", "cell_type", "normalized_count", "non_zero_fraction"])
 
     # loop over all genes in gene_list
@@ -333,8 +333,11 @@ def update_dot_plot(gene_list):
             gene_value=gene_name
         )
 
+        # add gene_name to cell_type_df
+        cell_type_df['gene_name'] = gene_name
+
         # merge the dataframes and fill in missing values with 0
-        finaldf = pd.merge(cell_type_df, gene_df, on='cell_id', how="left")
+        finaldf = pd.merge(cell_type_df[['gene_name', 'cell_type', 'cell_id']], gene_df, on='cell_id', how="left")
         finaldf['normalized_count'] = finaldf['normalized_count'].fillna(0)
 
         # group the data by cell type and calculate the mean expression and fraction of non-zero values
@@ -346,7 +349,7 @@ def update_dot_plot(gene_list):
 
         # add results to the data frame
         results_df = results_df.append(grouped[["gene_name", "cell_type", "mean_expression", "non_zero_fraction"]])
-
+        
     print(results_df)
 
     # create the plot
@@ -377,42 +380,57 @@ def update_dot_plot(gene_list):
                 "gene_name": "Gene(s)"
             },
             category_orders={"cell_type": cell_type_order},
+        )
+    # gene_list = ["'Thoc1'", "'Myo1b'"]
+    # print(gene_list)
+    # # initialize empty data frame to store results
+    # results_df = pd.DataFrame(columns=["cell_type"])
+
+    # # loop over all genes in gene_list
+    # for gene_value in gene_list:
+    #     # extract the gene name from the input string
+    #     gene_name = gene_value.split("\"")[0]
+    #     print(gene_name)
+
+    #     # query the data for cell types and gene expression
+    #     cell_type_df = make_query(
+    #         type="umap",
+    #         integration_method="harmony",
+    #         gene_value=gene_name
     #     )
-    # # extract the gene name from the input string
-    # gene_value = gene_value[0].split("\"")[0]
 
-    # # query the data for cell types and gene expression
-    # cell_type_df = make_query(
-    #     type="umap",
-    #     integration_method="harmony",
-    #     gene_value=gene_value
-    # )
+    #     gene_df = make_query(
+    #         type="gene",
+    #         integration_method="harmony",
+    #         gene_value=gene_name
+    #     )
 
-    # gene_df = make_query(
-    #     type="gene",
-    #     integration_method="harmony",
-    #     gene_value=gene_value
-    # )
+    #     # merge the dataframes and fill in missing values with 0
+    #     finaldf = pd.merge(cell_type_df, gene_df, on='cell_id', how="left")
+    #     finaldf['normalized_count'] = finaldf['normalized_count'].fillna(0)
 
-    # # merge the dataframes and fill in missing values with 0
-    # finaldf = pd.merge(cell_type_df, gene_df, on='cell_id', how="left")
-    # finaldf['normalized_count'] = finaldf['normalized_count'].fillna(0)
+    #     # group the data by cell type and calculate the mean expression and fraction of non-zero values
+    #     grouped = finaldf.groupby("cell_type").agg(
+    #         mean_expression=("normalized_count", "mean"),
+    #         non_zero_fraction=("normalized_count", lambda x: (x != 0).mean())
+    #     ).reset_index()
 
-    # # group the data by cell type and calculate the mean expression and fraction of non-zero values
-    # grouped = finaldf.groupby("cell_type").agg(
-    #     mean_expression=("normalized_count", "mean"),
-    #     non_zero_fraction=("normalized_count", lambda x: (x != 0).mean())
-    # ).reset_index()
-    # grouped["gene_name"] = gene_value
+    #     # add columns for this gene to the results dataframe
+    #     results_df[f"normalized_count_{gene_name}"] = grouped["mean_expression"]
+    #     results_df[f"non_zero_fraction_{gene_name}"] = grouped["non_zero_fraction"]
+
+    # results_df["cell_type"] = grouped["cell_type"]
+
+    # print(results_df)
 
     # # create the plot
     # try:
     #     fig = px.scatter(
-    #         grouped,
-    #         x="gene_name",
+    #         results_df,
+    #         x=results_df.columns.str.contains("normalized_count_"),
     #         y="cell_type",
-    #         color='mean_expression',
-    #         size="non_zero_fraction",
+    #         color=results_df.columns.str.contains("normalized_count_"),
+    #         size=results_df.columns.str.contains("non_zero_fraction_"),
     #         labels={
     #             "cell_type": "Cell Type",
     #             "mean_expression": "Log-Normalized<br>Expression",
@@ -422,18 +440,20 @@ def update_dot_plot(gene_list):
     #     )
     # except:
     #     fig = px.scatter(
-    #         grouped,
-    #         x="gene_name",
+    #         results_df,
+    #         x=results_df.columns.str.contains("normalized_count_"),
     #         y="cell_type",
-    #         color='mean_expression',
-    #         size="non_zero_fraction",
+    #         color=results_df.columns.str.contains("normalized_count_"),
+    #         size=results_df.columns.str.contains("non_zero_fraction_"),
     #         labels={
     #             "cell_type": "Cell Type",
     #             "mean_expression": "Log-Normalized<br>Expression",
     #             "gene_name": "Gene(s)"
     #         },
     #         category_orders={"cell_type": cell_type_order},
-        )
+        
+    #     )
+
     # # extract the gene name from the input string
     # gene_names = [x.split("\"")[0] for x in gene_value]
 
